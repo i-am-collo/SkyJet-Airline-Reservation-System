@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # SkyJet Airline Reservation System
 
 SkyJet is a JavaFX desktop airline reservation app connected to a Spring Boot REST API backend with PostgreSQL persistence. The frontend handles the user experience, while the backend owns authentication, flight data, bookings, admin flight management, JWT security, and database migrations.
@@ -291,3 +292,5 @@ Make sure:
 - Add booking cancellation controls to the JavaFX booking history.
 - Optionally show admin booking and login audit views.
 - Add backend service/controller tests and frontend integration checks.
+=======
+

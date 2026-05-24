@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controllers.SearchController"
+            styleClass="root-pane"
+            prefWidth="1280" prefHeight="800">
+
+    <!-- SIDEBAR -->
+    <left>
+        <VBox styleClass="sidebar" prefWidth="240" prefHeight="800" spacing="4">
+            <padding><Insets top="32" right="16" bottom="32" left="16"/></padding>
+            <VBox styleClass="sidebar-logo" alignment="CENTER" spacing="2">
+                <Label styleClass="sidebar-logo-text" text="✈  SkyJet"/>
+                <Label styleClass="sidebar-logo-sub"  text="Premium Aviation"/>
+            </VBox>
+            <Region prefHeight="28"/>
+            <Button styleClass="sidebar-btn"             text="⌂   Dashboard"     prefWidth="208" onAction="#goToDashboard"/>
+            <Button styleClass="sidebar-btn sidebar-btn-active" text="✈   Search Flights" prefWidth="208" onAction="#goToSearch"/>
+            <Button styleClass="sidebar-btn"             text="⊞   My Bookings"   prefWidth="208" onAction="#goToBookings"/>
+            <Button styleClass="sidebar-btn"             text="⚙   Admin Panel"   prefWidth="208" onAction="#goToAdmin"/>
+            <Region VBox.vgrow="ALWAYS"/>
+            <Button styleClass="btn-logout" text="Sign Out" prefWidth="208" onAction="#handleLogout"/>
+        </VBox>
+    </left>
+
+    <!-- MAIN -->
+    <center>
+        <VBox styleClass="main-content" spacing="0">
+
+            <!-- Topbar -->
+            <HBox styleClass="topbar" alignment="CENTER_LEFT" spacing="16">
+                <padding><Insets top="0" right="32" bottom="0" left="32"/></padding>
+                <Label styleClass="topbar-title" text="Search Flights"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="resultCountLabel" styleClass="result-count-badge" text=""/>
+            </HBox>
+
+            <ScrollPane fitToWidth="true" styleClass="content-scroll" VBox.vgrow="ALWAYS">
+                <VBox spacing="24">
+                    <padding><Insets top="28" right="28" bottom="28" left="28"/></padding>
+
+                    <!-- Search Form Card -->
+                    <VBox styleClass="search-card" spacing="20">
+                        <padding><Insets top="28" right="28" bottom="28" left="28"/></padding>
+
+                        <Label styleClass="card-title" text="Find Your Flight"/>
+
+                        <HBox spacing="16" alignment="CENTER_LEFT">
+                            <!-- Origin -->
+                            <VBox spacing="6" HBox.hgrow="ALWAYS">
+                                <Label styleClass="form-label" text="From"/>
+                                <ComboBox fx:id="originCombo" styleClass="form-combo"
+                                          prefWidth="200" maxWidth="Infinity"/>
+                            </VBox>
+                            <!-- Destination -->
+                            <VBox spacing="6" HBox.hgrow="ALWAYS">
+                                <Label styleClass="form-label" text="To"/>
+                                <ComboBox fx:id="destinationCombo" styleClass="form-combo"
+                                          prefWidth="200" maxWidth="Infinity"/>
+                            </VBox>
+                            <!-- Date -->
+                            <VBox spacing="6" HBox.hgrow="ALWAYS">
+                                <Label styleClass="form-label" text="Departure Date"/>
+                                <DatePicker fx:id="departureDatePicker" styleClass="form-combo"
+                                            prefWidth="180" maxWidth="Infinity"/>
+                            </VBox>
+                            <!-- Passengers -->
+                            <VBox spacing="6">
+                                <Label styleClass="form-label" text="Passengers"/>
+                                <Spinner fx:id="passengersSpinner" styleClass="form-spinner"
+                                         prefWidth="100"/>
+                            </VBox>
+                            <!-- Class -->
+                            <VBox spacing="6">
+                                <Label styleClass="form-label" text="Class"/>
+                                <ComboBox fx:id="classCombo" styleClass="form-combo"
+                                          prefWidth="140"/>
+                            </VBox>
+                            <!-- Search Button -->
+                            <VBox spacing="6" alignment="BOTTOM_LEFT">
+                                <Label styleClass="form-label" text=" "/>
+                                <Button fx:id="searchBtn" styleClass="btn-primary"
+                                        text="Search Flights" prefHeight="40"
+                                        onAction="#handleSearch"/>
+                            </VBox>
+                        </HBox>
+                    </VBox>
+
+                    <!-- Results Section -->
+                    <VBox fx:id="resultsPane" spacing="14">
+
+                        <HBox alignment="CENTER_LEFT" spacing="16">
+                            <Label styleClass="section-title" text="Available Flights"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Button styleClass="btn-primary-sm" text="Book Selected"
+                                    onAction="#bookSelected"/>
+                        </HBox>
+
+                        <Label fx:id="noResultsLabel" styleClass="no-results-label"
+                               text="No flights found for this route." visible="false"/>
+
+                        <!-- Flight Results TableView -->
+                        <TableView fx:id="flightTable" styleClass="flight-table"
+                                   VBox.vgrow="ALWAYS" prefHeight="460">
+                            <columns>
+                                <TableColumn fx:id="colFlightNum"   text="Flight #"    prefWidth="90"/>
+                                <TableColumn fx:id="colAirline"     text="Airline"     prefWidth="90"/>
+                                <TableColumn fx:id="colOrigin"      text="From"        prefWidth="155"/>
+                                <TableColumn fx:id="colDestination" text="To"          prefWidth="155"/>
+                                <TableColumn fx:id="colDeparture"   text="Departs"     prefWidth="80"/>
+                                <TableColumn fx:id="colArrival"     text="Arrives"     prefWidth="80"/>
+                                <TableColumn fx:id="colDuration"    text="Duration"    prefWidth="80"/>
+                                <TableColumn fx:id="colPrice"       text="Price"       prefWidth="80"/>
+                                <TableColumn fx:id="colSeats"       text="Seats"       prefWidth="70"/>
+                                <TableColumn fx:id="colStatus"      text="Status"      prefWidth="90"/>
+                            </columns>
+                            <placeholder>
+                                <Label text="No flights found. Adjust your search and try again."
+                                       styleClass="table-placeholder"/>
+                            </placeholder>
+                        </TableView>
+
+                        <!-- Legend -->
+                        <HBox spacing="24" alignment="CENTER_LEFT" styleClass="table-legend">
+                            <Label styleClass="legend-dot-green" text="●  On Time"/>
+                            <Label styleClass="legend-dot-red"   text="●  Delayed"/>
+                            <Label styleClass="legend-note"
+                                   text="Double-click a row or click 'Book Selected' to proceed."/>
+                        </HBox>
+
+                    </VBox>
+                </VBox>
+            </ScrollPane>
+        </VBox>
+    </center>
+
+</BorderPane>

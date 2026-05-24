@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="controllers.RegisterController"
+           styleClass="root-pane"
+           prefWidth="1280" prefHeight="800">
+
+    <VBox styleClass="login-bg" alignment="CENTER" prefWidth="1280" prefHeight="800"/>
+    <StackPane>
+        <Region styleClass="blob blob-1"/>
+        <Region styleClass="blob blob-2"/>
+    </StackPane>
+
+    <HBox alignment="CENTER" spacing="0">
+
+        <!-- Left Panel: Branding -->
+        <VBox styleClass="login-brand-panel" alignment="CENTER" spacing="20"
+              prefWidth="520" prefHeight="800">
+            <Label styleClass="brand-logo-text"   text="SKY"/>
+            <Label styleClass="brand-logo-accent"  text="JET"/>
+            <Label styleClass="brand-tagline"       text="Join the SkyJet Family"/>
+            <Label styleClass="brand-sub"
+                   text="Create your account and start booking&#10;premium flights in minutes."
+                   wrapText="true"/>
+        </VBox>
+
+        <!-- Right Panel: Register Card -->
+        <VBox alignment="CENTER" prefWidth="760" prefHeight="800">
+            <VBox fx:id="registerCard" styleClass="login-card" alignment="TOP_CENTER"
+                  spacing="16" maxWidth="460">
+                <padding><Insets top="40" right="48" bottom="40" left="48"/></padding>
+
+                <Label styleClass="login-title"    text="Create Account"/>
+                <Label styleClass="login-subtitle" text="Join millions of SkyJet travellers"/>
+
+                <!-- Full Name -->
+                <VBox spacing="6">
+                    <Label styleClass="form-label" text="Full Name"/>
+                    <TextField fx:id="nameField" styleClass="form-field"
+                               promptText="John Doe" prefWidth="364"/>
+                </VBox>
+
+                <!-- Email -->
+                <VBox spacing="6">
+                    <Label styleClass="form-label" text="Email Address"/>
+                    <TextField fx:id="emailField" styleClass="form-field"
+                               promptText="you@example.com" prefWidth="364"/>
+                </VBox>
+
+                <!-- Password -->
+                <VBox spacing="6">
+                    <Label styleClass="form-label" text="Password"/>
+                    <PasswordField fx:id="passwordField" styleClass="form-field"
+                                   promptText="Min 6 characters" prefWidth="364"/>
+                </VBox>
+
+                <!-- Confirm Password -->
+                <VBox spacing="6">
+                    <Label styleClass="form-label" text="Confirm Password"/>
+                    <PasswordField fx:id="confirmPasswordField" styleClass="form-field"
+                                   promptText="Re-enter password" prefWidth="364"/>
+                </VBox>
+
+                <!-- Error / Success labels -->
+                <Label fx:id="errorLabel"   styleClass="error-label"   text="" wrapText="true" maxWidth="364"/>
+                <Label fx:id="successLabel" styleClass="success-label" text="" wrapText="true" maxWidth="364"/>
+
+                <!-- Register Button -->
+                <Button fx:id="registerBtn" styleClass="btn-primary"
+                        text="Create Account" prefWidth="364"
+                        onAction="#handleRegister"/>
+
+                <!-- Back to Login -->
+                <HBox alignment="CENTER" spacing="6">
+                    <Label styleClass="link-label" text="Already have an account?"/>
+                    <Button styleClass="btn-link" text="Sign in" onAction="#goToLogin"/>
+                </HBox>
+
+            </VBox>
+        </VBox>
+    </HBox>
+</StackPane>

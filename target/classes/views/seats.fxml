@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controllers.SeatSelectionController"
+            styleClass="root-pane"
+            prefWidth="1280" prefHeight="800">
+
+    <!-- SIDEBAR -->
+    <left>
+        <VBox styleClass="sidebar" prefWidth="240" prefHeight="800" spacing="4">
+            <padding><Insets top="32" right="16" bottom="32" left="16"/></padding>
+            <VBox styleClass="sidebar-logo" alignment="CENTER" spacing="2">
+                <Label styleClass="sidebar-logo-text" text="✈  SkyJet"/>
+                <Label styleClass="sidebar-logo-sub"  text="Premium Aviation"/>
+            </VBox>
+            <Region prefHeight="28"/>
+            <Button styleClass="sidebar-btn"             text="⌂   Dashboard"     prefWidth="208" onAction="#goToDashboard"/>
+            <Button styleClass="sidebar-btn sidebar-btn-active" text="✈   Search Flights" prefWidth="208" onAction="#goToSearch"/>
+            <Button styleClass="sidebar-btn"             text="⊞   My Bookings"   prefWidth="208" onAction="#goToBookings"/>
+            <Button styleClass="sidebar-btn"             text="⚙   Admin Panel"   prefWidth="208" onAction="#goToAdmin"/>
+            <Region VBox.vgrow="ALWAYS"/>
+            <Button styleClass="btn-logout" text="Sign Out" prefWidth="208" onAction="#handleLogout"/>
+        </VBox>
+    </left>
+
+    <!-- MAIN CONTENT -->
+    <center>
+        <VBox styleClass="main-content" spacing="0">
+
+            <!-- Topbar -->
+            <HBox styleClass="topbar" alignment="CENTER_LEFT" spacing="16">
+                <padding><Insets top="0" right="32" bottom="0" left="32"/></padding>
+                <Button styleClass="btn-back" text="← Back" onAction="#goBack"/>
+                <Label styleClass="topbar-title" text="Select Your Seat"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="seatCountLabel" styleClass="result-count-badge" text=""/>
+            </HBox>
+
+            <ScrollPane fitToWidth="true" styleClass="content-scroll" VBox.vgrow="ALWAYS">
+                <VBox spacing="20">
+                    <padding><Insets top="24" right="24" bottom="24" left="24"/></padding>
+
+                    <!-- Flight Info Bar -->
+                    <HBox styleClass="flight-info-bar" alignment="CENTER_LEFT" spacing="16">
+                        <padding><Insets top="16" right="24" bottom="16" left="24"/></padding>
+                        <Label styleClass="flight-info-icon" text="✈"/>
+                        <Label fx:id="flightInfoLabel" styleClass="flight-info-text"
+                               text="Loading flight info…"/>
+                    </HBox>
+
+                    <!-- Seat Map + Legend Layout -->
+                    <HBox spacing="24" alignment="TOP_CENTER">
+
+                        <!-- Seat Map Card -->
+                        <VBox styleClass="seat-map-card" spacing="16" alignment="CENTER"
+                              HBox.hgrow="ALWAYS">
+                            <padding><Insets top="24" right="24" bottom="24" left="24"/></padding>
+
+                            <!-- Aircraft nose indicator -->
+                            <Label styleClass="aircraft-nose" text="✈  FRONT OF AIRCRAFT"/>
+
+                            <!-- Column headers row (rendered by controller in GridPane) -->
+                            <ScrollPane styleClass="seat-scroll" fitToWidth="true" fitToHeight="false"
+                                        prefHeight="520">
+                                <GridPane fx:id="seatGrid" hgap="6" vgap="6"
+                                          alignment="CENTER">
+                                    <padding><Insets top="8" right="8" bottom="8" left="8"/></padding>
+                                </GridPane>
+                            </ScrollPane>
+
+                            <Label styleClass="aircraft-tail" text="✈  REAR OF AIRCRAFT"/>
+                        </VBox>
+
+                        <!-- Legend + Selection Panel -->
+                        <VBox spacing="20" prefWidth="260">
+
+                            <!-- Legend -->
+                            <VBox fx:id="legendBox" styleClass="legend-card" spacing="12">
+                                <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+                                <Label styleClass="card-title" text="Seat Legend"/>
+                                <HBox spacing="10" alignment="CENTER_LEFT">
+                                    <Label styleClass="legend-swatch legend-first" text="   "/>
+                                    <VBox spacing="2">
+                                        <Label styleClass="legend-class" text="First Class (Rows 1–3)"/>
+                                        <Label styleClass="legend-price" text="3× base fare"/>
+                                    </VBox>
+                                </HBox>
+                                <HBox spacing="10" alignment="CENTER_LEFT">
+                                    <Label styleClass="legend-swatch legend-business" text="   "/>
+                                    <VBox spacing="2">
+                                        <Label styleClass="legend-class" text="Business (Rows 4–7)"/>
+                                        <Label styleClass="legend-price" text="1.8× base fare"/>
+                                    </VBox>
+                                </HBox>
+                                <HBox spacing="10" alignment="CENTER_LEFT">
+                                    <Label styleClass="legend-swatch legend-economy" text="   "/>
+                                    <VBox spacing="2">
+                                        <Label styleClass="legend-class" text="Economy (Rows 8–20)"/>
+                                        <Label styleClass="legend-price" text="Base fare"/>
+                                    </VBox>
+                                </HBox>
+                                <HBox spacing="10" alignment="CENTER_LEFT">
+                                    <Label styleClass="legend-swatch legend-booked" text="   "/>
+                                    <Label styleClass="legend-class" text="Booked / Unavailable"/>
+                                </HBox>
+                                <HBox spacing="10" alignment="CENTER_LEFT">
+                                    <Label styleClass="legend-swatch legend-selected" text="   "/>
+                                    <Label styleClass="legend-class" text="Your Selection"/>
+                                </HBox>
+                            </VBox>
+
+                            <!-- Selection Summary -->
+                            <VBox styleClass="selection-card" spacing="14">
+                                <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+                                <Label styleClass="card-title" text="Your Selection"/>
+                                <Label fx:id="selectedSeatLabel" styleClass="selected-seat-label"
+                                       text="No seat selected" wrapText="true"/>
+                                <Button fx:id="confirmSeatBtn" styleClass="btn-primary"
+                                        text="Confirm Seat &amp; Continue →"
+                                        prefWidth="220"
+                                        onAction="#confirmSeat"/>
+                            </VBox>
+
+                        </VBox>
+                    </HBox>
+                </VBox>
+            </ScrollPane>
+        </VBox>
+    </center>
+
+</BorderPane>

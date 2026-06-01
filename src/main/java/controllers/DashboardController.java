@@ -9,10 +9,13 @@ import javafx.scene.layout.*;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 import models.DataStore;
+import models.Flight;
 import models.User;
 
 import java.net.URL;
+import java.util.HashSet;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 /**
  * Controller for the main Dashboard screen.
@@ -58,11 +61,18 @@ public class DashboardController implements Initializable {
             userInitialsLabel.setText("SJ");
         }
 
+        var flights = DataStore.getInstance().getFlights();
+        int availableSeats = flights.stream().mapToInt(Flight::getAvailableSeats).sum();
+        Set<String> routes = new HashSet<>();
+        for (Flight flight : flights) {
+            routes.add(flight.getOrigin() + " -> " + flight.getDestination());
+        }
+
         // Animate statistics counters
-        animateCounter(statFlightsValue, 0, DataStore.getInstance().getFlights().size(), "");
+        animateCounter(statFlightsValue, 0, flights.size(), "");
         animateCounter(statBookingsValue, 0, DataStore.getInstance().getBookings().size(), "");
-        animateCounter(statSeatsValue, 0, 320, "");
-        animateCounter(statRoutesValue, 0, 48, "+");
+        animateCounter(statSeatsValue, 0, availableSeats, "");
+        animateCounter(statRoutesValue, 0, routes.size(), "");
     }
 
     /** Count-up animation for stat cards */

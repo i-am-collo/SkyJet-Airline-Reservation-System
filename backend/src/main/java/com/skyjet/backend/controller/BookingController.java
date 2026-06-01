@@ -30,6 +30,11 @@ public class BookingController {
         return bookingService.getBookingsForUser(authentication.getName());
     }
 
+    @GetMapping("/flights/{flightId}/booked-seats")
+    public List<String> bookedSeats(@PathVariable Long flightId) {
+        return bookingService.getConfirmedSeatNumbersForFlight(flightId);
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public BookingDTO createBooking(Authentication authentication,

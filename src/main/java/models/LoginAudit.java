@@ -32,6 +32,25 @@ public class LoginAudit {
         this.timestamp = LocalDateTime.now().format(formatter);
     }
 
+    public LoginAudit(String email, boolean success, String reason, String timestamp) {
+        this.userId = "UNKNOWN";
+        this.email = email;
+        this.success = success;
+        this.reason = reason;
+        this.timestamp = formatTimestamp(timestamp);
+    }
+
+    private String formatTimestamp(String value) {
+        if (value == null || value.isBlank()) {
+            return LocalDateTime.now().format(formatter);
+        }
+        try {
+            return LocalDateTime.parse(value).format(formatter);
+        } catch (Exception ex) {
+            return value;
+        }
+    }
+
     // Getters
     public String getUserId() {
         return userId;

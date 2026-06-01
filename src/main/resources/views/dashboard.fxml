@@ -28,8 +28,6 @@
                     text="✈   Search Flights" prefWidth="208" onAction="#goToSearch"/>
             <Button styleClass="sidebar-btn"
                     text="⊞   My Bookings" prefWidth="208" onAction="#goToBookings"/>
-            <Button styleClass="sidebar-btn"
-                    text="⚙   Admin Panel" prefWidth="208" onAction="#goToAdmin"/>
 
             <Region VBox.vgrow="ALWAYS"/>
 
@@ -85,7 +83,7 @@
                             <Label styleClass="stat-label" text="Total Flights"/>
                         </VBox>
                         <!-- Stat Card 2 -->
-                        <VBox styleClass="stat-card stat-card-blue" alignment="CENTER" spacing="8"
+                        <VBox styleClass="stat-card" alignment="CENTER" spacing="8"
                               HBox.hgrow="ALWAYS">
                             <padding><Insets top="24" right="20" bottom="24" left="20"/></padding>
                             <Label styleClass="stat-icon" text="🎫"/>
@@ -93,7 +91,7 @@
                             <Label styleClass="stat-label" text="Bookings Made"/>
                         </VBox>
                         <!-- Stat Card 3 -->
-                        <VBox styleClass="stat-card stat-card-teal" alignment="CENTER" spacing="8"
+                        <VBox styleClass="stat-card" alignment="CENTER" spacing="8"
                               HBox.hgrow="ALWAYS">
                             <padding><Insets top="24" right="20" bottom="24" left="20"/></padding>
                             <Label styleClass="stat-icon" text="💺"/>
@@ -101,7 +99,7 @@
                             <Label styleClass="stat-label" text="Seats Available"/>
                         </VBox>
                         <!-- Stat Card 4 -->
-                        <VBox styleClass="stat-card stat-card-amber" alignment="CENTER" spacing="8"
+                        <VBox styleClass="stat-card" alignment="CENTER" spacing="8"
                               HBox.hgrow="ALWAYS">
                             <padding><Insets top="24" right="20" bottom="24" left="20"/></padding>
                             <Label styleClass="stat-icon" text="🌍"/>
@@ -122,21 +120,21 @@
                                 <Label styleClass="dest-country" text="United Kingdom"/>
                                 <Label styleClass="dest-price"   text="from $850"/>
                             </VBox>
-                            <VBox styleClass="dest-card dest-card-2" alignment="BOTTOM_LEFT" spacing="6"
+                            <VBox styleClass="dest-card" alignment="BOTTOM_LEFT" spacing="6"
                                   HBox.hgrow="ALWAYS" prefHeight="160">
                                 <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
                                 <Label styleClass="dest-city"    text="Dubai"/>
                                 <Label styleClass="dest-country" text="United Arab Emirates"/>
                                 <Label styleClass="dest-price"   text="from $420"/>
                             </VBox>
-                            <VBox styleClass="dest-card dest-card-3" alignment="BOTTOM_LEFT" spacing="6"
+                            <VBox styleClass="dest-card" alignment="BOTTOM_LEFT" spacing="6"
                                   HBox.hgrow="ALWAYS" prefHeight="160">
                                 <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
                                 <Label styleClass="dest-city"    text="New York"/>
                                 <Label styleClass="dest-country" text="United States"/>
                                 <Label styleClass="dest-price"   text="from $1,250"/>
                             </VBox>
-                            <VBox styleClass="dest-card dest-card-4" alignment="BOTTOM_LEFT" spacing="6"
+                            <VBox styleClass="dest-card" alignment="BOTTOM_LEFT" spacing="6"
                                   HBox.hgrow="ALWAYS" prefHeight="160">
                                 <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
                                 <Label styleClass="dest-city"    text="Singapore"/>
@@ -154,8 +152,6 @@
                                     text="✈  Search Flights" onAction="#quickSearch"/>
                             <Button styleClass="quick-action-btn" prefWidth="200" prefHeight="80"
                                     text="📋  View History" onAction="#viewHistory"/>
-                            <Button styleClass="quick-action-btn" prefWidth="200" prefHeight="80"
-                                    text="⚙  Admin Panel" onAction="#goToAdmin"/>
                         </HBox>
                     </VBox>
 

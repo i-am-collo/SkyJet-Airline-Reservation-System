@@ -42,20 +42,21 @@ public class AuthService {
 
     @Transactional
     public AuthResponse login(LoginRequest request) {
-        User user = userRepository.findByEmail(request.getEmail().toLowerCase(Locale.ROOT))
+        String email = request.getEmail().trim().toLowerCase(Locale.ROOT);
+        User user = userRepository.findByEmail(email)
                 .orElse(null);
 
         try {
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+                    new UsernamePasswordAuthenticationToken(email, request.getPassword()));
         } catch (AuthenticationException ex) {
             if (!authenticateSeedDemoUser(user, request.getPassword())) {
-                audit(request.getEmail(), "FAILURE");
+                audit(email, "FAILURE");
                 throw new ApiException(HttpStatus.UNAUTHORIZED, "Invalid email or password");
             }
         }
 
-        user = userRepository.findByEmail(request.getEmail().toLowerCase(Locale.ROOT))
+        user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, "Invalid email or password"));
         audit(user.getEmail(), "SUCCESS");
         return authResponse(user);

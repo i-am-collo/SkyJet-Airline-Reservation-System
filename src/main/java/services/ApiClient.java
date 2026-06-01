@@ -6,6 +6,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import models.Booking;
 import models.Flight;
+import models.LoginAudit;
 import models.SessionManager;
 import models.User;
 
@@ -19,7 +20,9 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class ApiClient {
 
@@ -114,6 +117,37 @@ public class ApiClient {
         return toBooking(send("/api/bookings", "POST", body, true));
     }
 
+    public Booking cancelBooking(Booking booking) throws IOException, InterruptedException {
+        return toBooking(send("/api/bookings/" + encode(booking.getBookingRef()) + "/cancel", "POST", null, true));
+    }
+
+    public Set<String> getBookedSeats(long flightId) throws IOException, InterruptedException {
+        JsonNode json = send("/api/bookings/flights/" + flightId + "/booked-seats", "GET", null, true);
+        Set<String> seats = new HashSet<>();
+        for (JsonNode item : json) {
+            seats.add(item.asText());
+        }
+        return seats;
+    }
+
+    public ObservableList<Booking> getAdminBookings() throws IOException, InterruptedException {
+        JsonNode json = send("/api/admin/bookings", "GET", null, true);
+        ObservableList<Booking> bookings = FXCollections.observableArrayList();
+        for (JsonNode item : json) {
+            bookings.add(toBooking(item));
+        }
+        return bookings;
+    }
+
+    public ObservableList<LoginAudit> getLoginAudits() throws IOException, InterruptedException {
+        JsonNode json = send("/api/admin/audits", "GET", null, true);
+        ObservableList<LoginAudit> audits = FXCollections.observableArrayList();
+        for (JsonNode item : json) {
+            audits.add(toLoginAudit(item));
+        }
+        return audits;
+    }
+
     private JsonNode send(String path, String method, Object body, boolean authenticated)
             throws IOException, InterruptedException {
         HttpRequest.Builder builder = HttpRequest.newBuilder()
@@ -190,6 +224,14 @@ public class ApiClient {
                 item.path("totalCost").asDouble(),
                 text(item, "status"),
                 bookingDate);
+    }
+
+    private LoginAudit toLoginAudit(JsonNode item) {
+        return new LoginAudit(
+                text(item, "email"),
+                "SUCCESS".equalsIgnoreCase(text(item, "status")),
+                text(item, "status"),
+                text(item, "loginTime"));
     }
 
     private Map<String, Object> flightBody(Flight flight) {

@@ -9,8 +9,10 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import javafx.util.Duration;
+import models.Booking;
 import models.DataStore;
 import models.Flight;
+import models.LoginAudit;
 
 import java.net.URL;
 import java.util.Optional;
@@ -86,6 +88,34 @@ public class AdminController implements Initializable {
     @FXML
     private Label formStatusLabel;
 
+    @FXML
+    private TableView<Booking> adminBookingsTable;
+    @FXML
+    private TableColumn<Booking, String> adminColBookingRef;
+    @FXML
+    private TableColumn<Booking, String> adminColPassenger;
+    @FXML
+    private TableColumn<Booking, String> adminColBookingFlight;
+    @FXML
+    private TableColumn<Booking, String> adminColBookingRoute;
+    @FXML
+    private TableColumn<Booking, String> adminColBookingSeat;
+    @FXML
+    private TableColumn<Booking, Double> adminColBookingCost;
+    @FXML
+    private TableColumn<Booking, String> adminColBookingStatus;
+    @FXML
+    private TableColumn<Booking, String> adminColBookingDate;
+
+    @FXML
+    private TableView<LoginAudit> auditTable;
+    @FXML
+    private TableColumn<LoginAudit, String> auditColEmail;
+    @FXML
+    private TableColumn<LoginAudit, String> auditColStatus;
+    @FXML
+    private TableColumn<LoginAudit, String> auditColTime;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
@@ -97,7 +127,9 @@ public class AdminController implements Initializable {
             }
 
             configureTable();
+            configureAdminTables();
             loadFlights();
+            loadAdminTables();
             refreshStats();
 
             if (cmbStatus != null) {
@@ -109,19 +141,6 @@ public class AdminController implements Initializable {
                 formStatusLabel.setVisible(false);
 
             // Animate stats
-            if (statTotalFlights != null)
-                animateStatCard(statTotalFlights, DataStore.getInstance().getFlights().size());
-            if (statTotalBookings != null)
-                animateStatCard(statTotalBookings, DataStore.getInstance().getBookings().size());
-
-            // Revenue from bookings
-            double rev = DataStore.getInstance().getBookings().stream()
-                    .mapToDouble(b -> b.getTotalCost()).sum();
-            if (statTotalRevenue != null)
-                statTotalRevenue.setText(String.format("$%,.0f", rev));
-            if (statOccupancy != null)
-                statOccupancy.setText("73%");
-
             // Click table row → populate form
             if (flightTable != null)
                 flightTable.getSelectionModel().selectedItemProperty().addListener((obs, old, f) -> {
@@ -183,11 +202,63 @@ public class AdminController implements Initializable {
         flightTable.setItems(DataStore.getInstance().getFlights());
     }
 
+    private void configureAdminTables() {
+        if (adminBookingsTable != null) {
+            adminColBookingRef.setCellValueFactory(new PropertyValueFactory<>("bookingRef"));
+            adminColPassenger.setCellValueFactory(new PropertyValueFactory<>("passengerName"));
+            adminColBookingFlight.setCellValueFactory(new PropertyValueFactory<>("flightNumber"));
+            adminColBookingRoute.setCellValueFactory(new PropertyValueFactory<>("route"));
+            adminColBookingSeat.setCellValueFactory(new PropertyValueFactory<>("seatNumber"));
+            adminColBookingCost.setCellValueFactory(new PropertyValueFactory<>("totalCost"));
+            adminColBookingStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
+            adminColBookingDate.setCellValueFactory(new PropertyValueFactory<>("bookingDate"));
+            adminColBookingCost.setCellFactory(col -> new TableCell<>() {
+                @Override
+                protected void updateItem(Double cost, boolean empty) {
+                    super.updateItem(cost, empty);
+                    setText(empty || cost == null ? null : String.format("$%.2f", cost));
+                }
+            });
+        }
+
+        if (auditTable != null) {
+            auditColEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
+            auditColStatus.setCellValueFactory(new PropertyValueFactory<>("reason"));
+            auditColTime.setCellValueFactory(new PropertyValueFactory<>("timestamp"));
+        }
+    }
+
+    private void loadAdminTables() {
+        if (adminBookingsTable != null) {
+            adminBookingsTable.setItems(DataStore.getInstance().getAdminBookings());
+        }
+        if (auditTable != null) {
+            auditTable.setItems(DataStore.getInstance().getBackendLoginAudits());
+        }
+    }
+
     private void refreshStats() {
+        ObservableList<Flight> flights = DataStore.getInstance().getFlights();
+        ObservableList<Booking> bookings = DataStore.getInstance().getAdminBookings();
+        long confirmedBookings = bookings.stream()
+                .filter(b -> "CONFIRMED".equalsIgnoreCase(b.getStatus()))
+                .count();
+        double revenue = bookings.stream()
+                .filter(b -> !"CANCELLED".equalsIgnoreCase(b.getStatus()))
+                .mapToDouble(Booking::getTotalCost)
+                .sum();
+        int availableSeats = flights.stream().mapToInt(Flight::getAvailableSeats).sum();
+        long totalSeatDemand = availableSeats + confirmedBookings;
+        long occupancy = totalSeatDemand == 0 ? 0 : Math.round((confirmedBookings * 100.0) / totalSeatDemand);
+
         if (statTotalFlights != null)
-            statTotalFlights.setText(String.valueOf(DataStore.getInstance().getFlights().size()));
+            statTotalFlights.setText(String.valueOf(flights.size()));
         if (statTotalBookings != null)
-            statTotalBookings.setText(String.valueOf(DataStore.getInstance().getBookings().size()));
+            statTotalBookings.setText(String.valueOf(bookings.size()));
+        if (statTotalRevenue != null)
+            statTotalRevenue.setText(String.format("$%,.0f", revenue));
+        if (statOccupancy != null)
+            statOccupancy.setText(occupancy + "%");
     }
 
     // ────────────────────────────────────────────
@@ -222,6 +293,7 @@ public class AdminController implements Initializable {
             showFormStatus("Flight " + f.getFlightNumber() + " added successfully.", true);
             clearForm();
             loadFlights();
+            loadAdminTables();
             refreshStats();
             animateStatCard(statTotalFlights, DataStore.getInstance().getFlights().size());
         } catch (RuntimeException ex) {
@@ -257,6 +329,8 @@ public class AdminController implements Initializable {
         try {
             DataStore.getInstance().updateFlight(selected);
             flightTable.refresh();
+            loadAdminTables();
+            refreshStats();
             showFormStatus("Flight updated successfully.", true);
         } catch (RuntimeException ex) {
             showFormStatus("Could not update flight: " + ex.getMessage(), false);
@@ -285,6 +359,7 @@ public class AdminController implements Initializable {
             try {
                 DataStore.getInstance().removeFlight(selected);
                 clearForm();
+                loadAdminTables();
                 refreshStats();
                 showFormStatus("Flight deleted.", true);
                 animateStatCard(statTotalFlights, DataStore.getInstance().getFlights().size());

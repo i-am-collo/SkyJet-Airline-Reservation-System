@@ -5,6 +5,7 @@ app\Main.class
 models\SessionManager.class
 controllers\DashboardController.class
 models\Booking.class
+controllers\AdminController$3.class
 controllers\BookingController$2.class
 controllers\SearchController$3.class
 controllers\SeatSelectionController.class

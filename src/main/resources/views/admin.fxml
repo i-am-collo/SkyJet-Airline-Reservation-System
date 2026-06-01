@@ -17,9 +17,6 @@
                 <Label styleClass="sidebar-logo-sub"  text="Admin Console"/>
             </VBox>
             <Region prefHeight="28"/>
-            <Button styleClass="sidebar-btn"             text="⌂   Dashboard"     prefWidth="208" onAction="#goToDashboard"/>
-            <Button styleClass="sidebar-btn"             text="✈   Search Flights" prefWidth="208" onAction="#goToSearch"/>
-            <Button styleClass="sidebar-btn"             text="⊞   My Bookings"   prefWidth="208" onAction="#goToBookings"/>
             <Button styleClass="sidebar-btn sidebar-btn-active" text="⚙   Admin Panel"  prefWidth="208" onAction="#goToAdmin"/>
             <Region VBox.vgrow="ALWAYS"/>
             <Button styleClass="btn-logout" text="Sign Out" prefWidth="208" onAction="#handleLogout"/>
@@ -50,19 +47,19 @@
                             <Label fx:id="statTotalFlights"  styleClass="stat-value" text="0"/>
                             <Label styleClass="stat-label" text="Total Flights"/>
                         </VBox>
-                        <VBox styleClass="stat-card stat-card-blue" alignment="CENTER" spacing="8" HBox.hgrow="ALWAYS">
+                        <VBox styleClass="stat-card" alignment="CENTER" spacing="8" HBox.hgrow="ALWAYS">
                             <padding><Insets top="20" right="16" bottom="20" left="16"/></padding>
                             <Label styleClass="stat-icon" text="🎫"/>
                             <Label fx:id="statTotalBookings" styleClass="stat-value" text="0"/>
                             <Label styleClass="stat-label" text="Total Bookings"/>
                         </VBox>
-                        <VBox styleClass="stat-card stat-card-teal" alignment="CENTER" spacing="8" HBox.hgrow="ALWAYS">
+                        <VBox styleClass="stat-card" alignment="CENTER" spacing="8" HBox.hgrow="ALWAYS">
                             <padding><Insets top="20" right="16" bottom="20" left="16"/></padding>
                             <Label styleClass="stat-icon" text="💰"/>
                             <Label fx:id="statTotalRevenue"  styleClass="stat-value" text="$$0"/>
                             <Label styleClass="stat-label" text="Revenue (Demo)"/>
                         </VBox>
-                        <VBox styleClass="stat-card stat-card-amber" alignment="CENTER" spacing="8" HBox.hgrow="ALWAYS">
+                        <VBox styleClass="stat-card" alignment="CENTER" spacing="8" HBox.hgrow="ALWAYS">
                             <padding><Insets top="20" right="16" bottom="20" left="16"/></padding>
                             <Label styleClass="stat-icon" text="📊"/>
                             <Label fx:id="statOccupancy"     styleClass="stat-value" text="–"/>
@@ -179,6 +176,41 @@
                             </VBox>
                         </HBox>
 
+                    </VBox>
+
+                    <!-- Admin Booking View -->
+                    <VBox spacing="14">
+                        <Label styleClass="section-title" text="All Bookings"/>
+                        <TableView fx:id="adminBookingsTable" styleClass="flight-table" prefHeight="260">
+                            <columns>
+                                <TableColumn fx:id="adminColBookingRef" text="Ref #" prefWidth="100"/>
+                                <TableColumn fx:id="adminColPassenger" text="Passenger" prefWidth="150"/>
+                                <TableColumn fx:id="adminColBookingFlight" text="Flight" prefWidth="90"/>
+                                <TableColumn fx:id="adminColBookingRoute" text="Route" prefWidth="220"/>
+                                <TableColumn fx:id="adminColBookingSeat" text="Seat" prefWidth="70"/>
+                                <TableColumn fx:id="adminColBookingCost" text="Cost" prefWidth="90"/>
+                                <TableColumn fx:id="adminColBookingStatus" text="Status" prefWidth="110"/>
+                                <TableColumn fx:id="adminColBookingDate" text="Booked On" prefWidth="120"/>
+                            </columns>
+                            <placeholder>
+                                <Label text="No bookings found." styleClass="table-placeholder"/>
+                            </placeholder>
+                        </TableView>
+                    </VBox>
+
+                    <!-- Admin Audit View -->
+                    <VBox spacing="14">
+                        <Label styleClass="section-title" text="Login Audits"/>
+                        <TableView fx:id="auditTable" styleClass="flight-table" prefHeight="220">
+                            <columns>
+                                <TableColumn fx:id="auditColEmail" text="Email" prefWidth="260"/>
+                                <TableColumn fx:id="auditColStatus" text="Status" prefWidth="120"/>
+                                <TableColumn fx:id="auditColTime" text="Login Time" prefWidth="180"/>
+                            </columns>
+                            <placeholder>
+                                <Label text="No login audits found." styleClass="table-placeholder"/>
+                            </placeholder>
+                        </TableView>
                     </VBox>
                 </VBox>
             </ScrollPane>

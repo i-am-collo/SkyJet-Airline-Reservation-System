@@ -91,7 +91,7 @@ public class LoginController implements Initializable {
                         loginBtn.setDisable(false);
                         loginBtn.setText("Sign In");
                         loadingLabel.setVisible(false);
-                        showError("Invalid email or password. Please try again.");
+                        showError(loginErrorMessage());
                         shakeCard();
                         passwordField.clear();
                     }
@@ -129,6 +129,14 @@ public class LoginController implements Initializable {
         ft.setFromValue(0);
         ft.setToValue(1);
         ft.play();
+    }
+
+    private String loginErrorMessage() {
+        String error = DataStore.getInstance().getLastLoginError();
+        if (error == null || error.isBlank() || error.toLowerCase().contains("invalid email or password")) {
+            return "Invalid email or password. Please try again.";
+        }
+        return "Unable to reach the backend. Demo buttons still work offline.";
     }
 
     /** Horizontal shake animation on the login card */

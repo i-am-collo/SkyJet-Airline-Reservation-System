@@ -30,14 +30,10 @@ public class SeatSelectionController implements Initializable {
 
     private static final int    ROWS           = 20;
     private static final String[] COLS         = {"A","B","C","","D","E","F"};
-    private static final Set<String> BOOKED    = new HashSet<>(Arrays.asList(
-        "1A","1B","2C","3A","3D","4F","5B","5C","6E",
-        "7A","8B","9C","9D","10F","11A","12E","13B",
-        "14D","15A","15F","16C","17B","18E","19A","20D"
-    ));
 
     private Button selectedButton = null;
     private String selectedSeat   = null;
+    private Set<String> bookedSeats = new HashSet<>();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -49,6 +45,7 @@ public class SeatSelectionController implements Initializable {
             seatCountLabel.setText(f.getAvailableSeats() + " seats available");
         }
 
+        bookedSeats = DataStore.getInstance().getBookedSeatsForSelectedFlight();
         selectedSeatLabel.setText("No seat selected");
         confirmSeatBtn.setDisable(true);
         buildSeatMap();
@@ -100,7 +97,7 @@ public class SeatSelectionController implements Initializable {
         btn.setMinSize(36, 32);
         btn.setMaxSize(36, 32);
 
-        if (BOOKED.contains(seatId)) {
+        if (bookedSeats.contains(seatId)) {
             btn.getStyleClass().addAll("seat-btn", "seat-booked");
             btn.setDisable(true);
         } else if (row <= 3) {
@@ -115,7 +112,7 @@ public class SeatSelectionController implements Initializable {
 
         // Hover scale
         btn.setOnMouseEntered(e -> {
-            if (!BOOKED.contains(seatId)) {
+            if (!bookedSeats.contains(seatId)) {
                 ScaleTransition sc = new ScaleTransition(Duration.millis(100), btn);
                 sc.setToX(1.15); sc.setToY(1.15);
                 sc.play();
@@ -135,7 +132,7 @@ public class SeatSelectionController implements Initializable {
         if (selectedButton != null) {
             selectedButton.getStyleClass().remove("seat-selected");
             // Re-apply original class
-            int rowNum = Integer.parseInt(seatId.replaceAll("[^0-9]", ""));
+            int rowNum = Integer.parseInt(selectedSeat.replaceAll("[^0-9]", ""));
             if (rowNum <= 3)      selectedButton.getStyleClass().add("seat-first");
             else if (rowNum <= 7) selectedButton.getStyleClass().add("seat-business");
             else                  selectedButton.getStyleClass().add("seat-available");

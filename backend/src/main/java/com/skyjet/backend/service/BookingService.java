@@ -43,6 +43,15 @@ public class BookingService {
         return bookingRepository.findAll().stream().map(BookingDTO::fromEntity).toList();
     }
 
+    @Transactional(readOnly = true)
+    public List<String> getConfirmedSeatNumbersForFlight(Long flightId) {
+        flightService.findEntity(flightId);
+        return bookingRepository.findByFlight_IdAndStatus(flightId, "CONFIRMED").stream()
+                .map(Booking::getSeatNumber)
+                .filter(seat -> seat != null && !seat.isBlank())
+                .toList();
+    }
+
     @Transactional
     public BookingDTO createBooking(String email, BookingDTO request) {
         User user = currentUser(email);

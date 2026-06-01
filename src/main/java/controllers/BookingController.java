@@ -211,6 +211,36 @@ public class BookingController implements Initializable {
         Main.navigateTo("search");
     }
 
+    @FXML
+    public void cancelSelectedBooking() {
+        Booking selected = historyTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            showAlert("No Selection", "Please select a booking to cancel.");
+            return;
+        }
+        if ("CANCELLED".equalsIgnoreCase(selected.getStatus())) {
+            showAlert("Already Cancelled", "This booking has already been cancelled.");
+            return;
+        }
+
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
+                "Cancel booking " + selected.getBookingRef() + "?",
+                ButtonType.YES, ButtonType.NO);
+        confirm.setTitle("Confirm Cancellation");
+        confirm.setHeaderText(null);
+        if (confirm.showAndWait().orElse(ButtonType.NO) != ButtonType.YES) {
+            return;
+        }
+
+        try {
+            DataStore.getInstance().cancelBooking(selected);
+            loadHistory();
+            showAlert("Booking Cancelled", "Booking " + selected.getBookingRef() + " has been cancelled.");
+        } catch (RuntimeException ex) {
+            showAlert("Cancellation Failed", ex.getMessage());
+        }
+    }
+
     // ────────────────────────────────────────────
     //  Booking History Table
     // ────────────────────────────────────────────

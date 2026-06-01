@@ -34,7 +34,7 @@ public class SecurityConfig {
     private final PasswordEncoder passwordEncoder;
 
     @Value("${app.cors.allowed-origins}")
-    private String allowedOrigins;
+    protected String allowedOrigins;
 
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
                           CustomUserDetailsService userDetailsService,

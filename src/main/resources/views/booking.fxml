@@ -20,7 +20,6 @@
             <Button styleClass="sidebar-btn"             text="⌂   Dashboard"     prefWidth="208" onAction="#goToDashboard"/>
             <Button styleClass="sidebar-btn"             text="✈   Search Flights" prefWidth="208" onAction="#goToSearch"/>
             <Button styleClass="sidebar-btn sidebar-btn-active" text="⊞   My Bookings"  prefWidth="208" onAction="#goToBookings"/>
-            <Button styleClass="sidebar-btn"             text="⚙   Admin Panel"   prefWidth="208" onAction="#goToAdmin"/>
             <Region VBox.vgrow="ALWAYS"/>
             <Button styleClass="btn-logout" text="Sign Out" prefWidth="208" onAction="#handleLogout"/>
         </VBox>
@@ -194,6 +193,10 @@
                                        styleClass="table-placeholder"/>
                             </placeholder>
                         </TableView>
+                        <HBox spacing="12" alignment="CENTER_LEFT">
+                            <Button styleClass="btn-danger" text="Cancel Selected Booking"
+                                    onAction="#cancelSelectedBooking"/>
+                        </HBox>
                     </VBox>
 
                 </VBox>

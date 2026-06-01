@@ -5,7 +5,10 @@ import javafx.collections.ObservableList;
 import services.ApiClient;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 /**
  * Backend-backed application state for the JavaFX client.
@@ -22,6 +25,7 @@ public class DataStore {
     private User currentUser;
     private Flight selectedFlight;
     private String selectedSeat;
+    private String lastLoginError;
 
     private DataStore() {
         apiClient = ApiClient.getInstance();
@@ -29,6 +33,7 @@ public class DataStore {
         bookings = FXCollections.observableArrayList();
         users = new ArrayList<>();
         loginAudits = new ArrayList<>();
+        initUsers();
     }
 
     public static DataStore getInstance() {
@@ -93,15 +98,40 @@ public class DataStore {
     // ───────────────────────────────────────────
 
     public User login(String email, String password) {
+        String normalizedEmail = email.trim().toLowerCase(Locale.ROOT);
+        lastLoginError = null;
+
         try {
-            ApiClient.AuthResult result = apiClient.login(email, password);
+            ApiClient.AuthResult result = apiClient.login(normalizedEmail, password);
             SessionManager.getInstance().createSession(result.user(), result.token(), result.expiresIn());
             currentUser = result.user();
             return currentUser;
         } catch (Exception ex) {
-            auditLogin(null, email, false, ex.getMessage());
+            User demoUser = loginDemoUser(normalizedEmail, password);
+            if (demoUser != null) {
+                currentUser = demoUser;
+                SessionManager.getInstance().createSession(currentUser);
+                auditLogin(currentUser.getId(), normalizedEmail, true, "Demo login fallback");
+                return currentUser;
+            }
+
+            lastLoginError = ex.getMessage();
+            auditLogin(null, normalizedEmail, false, lastLoginError);
             return null;
         }
+    }
+
+    private User loginDemoUser(String email, String password) {
+        for (User user : users) {
+            if (user.getEmail().equalsIgnoreCase(email) && user.getPassword().equals(password)) {
+                return user;
+            }
+        }
+        return null;
+    }
+
+    public String getLastLoginError() {
+        return lastLoginError;
     }
 
     public boolean registerUser(String fullName, String email, String password) {
@@ -155,6 +185,18 @@ public class DataStore {
         }
     }
 
+    public boolean cancelBooking(Booking booking) {
+        try {
+            Booking cancelled = apiClient.cancelBooking(booking);
+            booking.setStatus(cancelled.getStatus());
+            refreshBookings();
+            refreshFlights();
+            return true;
+        } catch (Exception ex) {
+            throw new RuntimeException(ex.getMessage(), ex);
+        }
+    }
+
     public void refreshBookings() {
         try {
             bookings = apiClient.getBookings();
@@ -162,6 +204,34 @@ public class DataStore {
                 currentUser.setTotalBookings(bookings.size());
         } catch (Exception ex) {
             bookings = FXCollections.observableArrayList();
+        }
+    }
+
+    public ObservableList<Booking> getAdminBookings() {
+        try {
+            return apiClient.getAdminBookings();
+        } catch (Exception ex) {
+            return FXCollections.observableArrayList();
+        }
+    }
+
+    public ObservableList<LoginAudit> getBackendLoginAudits() {
+        try {
+            return apiClient.getLoginAudits();
+        } catch (Exception ex) {
+            return FXCollections.observableArrayList(getLoginAudits());
+        }
+    }
+
+    public Set<String> getBookedSeatsForSelectedFlight() {
+        Flight flight = getSelectedFlight();
+        if (flight == null || flight.getId() <= 0) {
+            return new HashSet<>();
+        }
+        try {
+            return apiClient.getBookedSeats(flight.getId());
+        } catch (Exception ex) {
+            return new HashSet<>();
         }
     }
 

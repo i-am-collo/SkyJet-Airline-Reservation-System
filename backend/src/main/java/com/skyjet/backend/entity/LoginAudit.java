@@ -5,7 +5,8 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 /**
- * LoginAudit Entity - Logs all login attempts for security auditing
+ * LoginAudit Entity - Tracks every login attempt (success or failure).
+ * Captures IP address and user agent for security monitoring.
  */
 @Entity
 @Table(name = "login_audits")
@@ -17,19 +18,36 @@ public class LoginAudit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "audit_id")
+    private Long auditId;
 
-    @Column(nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @Column(nullable = false, length = 255)
     private String email;
 
-    @Column(nullable = false, length = 50)
-    private String status; // SUCCESS, FAILURE
+    @Column(nullable = false)
+    private Boolean success;
 
-    @Column(name = "login_time", nullable = false, updatable = false)
-    private LocalDateTime loginTime;
+    @Column(length = 255)
+    private String reason;
+
+    @Column(name = "ip_address", length = 45)
+    private String ipAddress;
+
+    @Column(name = "user_agent", columnDefinition = "TEXT")
+    private String userAgent;
+
+    @Column(name = "login_time")
+    @Builder.Default
+    private LocalDateTime loginTime = LocalDateTime.now();
 
     @PrePersist
     protected void onCreate() {
-        this.loginTime = LocalDateTime.now();
+        if (this.loginTime == null) {
+            this.loginTime = LocalDateTime.now();
+        }
     }
 }

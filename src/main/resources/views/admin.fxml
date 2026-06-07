@@ -196,6 +196,9 @@
                                 <Label text="No bookings found." styleClass="table-placeholder"/>
                             </placeholder>
                         </TableView>
+                        <HBox spacing="12" alignment="CENTER_LEFT">
+                            <Button styleClass="btn-danger" text="✖  Cancel Selected Booking" onAction="#handleCancelBooking"/>
+                        </HBox>
                     </VBox>
 
                     <!-- Admin Audit View -->

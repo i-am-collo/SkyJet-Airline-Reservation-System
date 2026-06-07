@@ -1,11 +1,12 @@
 package com.skyjet.backend.entity;
 
+import com.skyjet.backend.entity.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
 
 /**
- * User Entity - Represents a registered user in the system
+ * User Entity - Maps to the users table in Supabase
  */
 @Entity
 @Table(name = "users")
@@ -17,41 +18,47 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "user_id")
+    private Long userId;
 
-    @Column(name = "user_id", unique = true, nullable = false, length = 20)
-    private String userId;
+    @Column(name = "first_name", nullable = false, length = 100)
+    private String firstName;
 
-    @Column(nullable = false)
-    private String name;
+    @Column(name = "last_name", nullable = false, length = 100)
+    private String lastName;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = false, length = 255)
     private String email;
 
-    @Column(nullable = false)
-    private String password;
+    @Column(length = 30)
+    private String phone;
 
-    @Column(nullable = false, length = 50)
-    private String role; // USER, ADMIN
+    @Column(name = "password_hash", nullable = false, columnDefinition = "TEXT")
+    private String passwordHash;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, columnDefinition = "user_role_enum")
+    @Builder.Default
+    private UserRole role = UserRole.CUSTOMER;
+
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
 
     @PrePersist
     protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
+        if (this.createdAt == null) {
+            this.createdAt = LocalDateTime.now();
+        }
     }
 
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
+    /**
+     * Returns the full display name (first + last).
+     */
+    public String getFullName() {
+        return (firstName != null ? firstName : "") + " " + (lastName != null ? lastName : "");
     }
 
     public boolean isAdmin() {
-        return "ADMIN".equalsIgnoreCase(this.role);
+        return this.role == UserRole.ADMIN;
     }
 }

@@ -1,6 +1,5 @@
 package com.skyjet.backend.dto;
 
-import com.skyjet.backend.entity.Booking;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -11,13 +10,17 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+/**
+ * BookingDTO - Preserves the same JSON shape as the old API for frontend compatibility.
+ * Fields are assembled from booking + first ticket + first passenger.
+ */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookingDTO {
     private Long id;
-    private String bookingId;
+    private String bookingId;     // maps to booking_ref
 
     @NotNull
     private Long flightId;
@@ -30,26 +33,9 @@ public class BookingDTO {
     @NotBlank
     private String passengerName;
 
+    private String passportNo;
+
     private String status;
-    private BigDecimal totalCost;
+    private BigDecimal totalCost;  // maps to total_amount
     private LocalDateTime bookingDate;
-
-    public static BookingDTO fromEntity(Booking booking) {
-        String route = booking.getFlight().getOrigin() + " -> " + booking.getFlight().getDestination();
-        String schedule = booking.getFlight().getDepartureTime() + " - " + booking.getFlight().getArrivalTime();
-
-        return BookingDTO.builder()
-                .id(booking.getId())
-                .bookingId(booking.getBookingId())
-                .flightId(booking.getFlight().getId())
-                .flightNumber(booking.getFlight().getFlightNumber())
-                .route(route)
-                .schedule(schedule)
-                .seatNumber(booking.getSeatNumber())
-                .passengerName(booking.getPassengerName())
-                .status(booking.getStatus())
-                .totalCost(booking.getTotalCost())
-                .bookingDate(booking.getBookingDate())
-                .build();
-    }
 }

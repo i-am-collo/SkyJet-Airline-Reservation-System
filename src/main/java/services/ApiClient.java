@@ -229,9 +229,10 @@ public class ApiClient {
     private LoginAudit toLoginAudit(JsonNode item) {
         return new LoginAudit(
                 text(item, "email"),
-                "SUCCESS".equalsIgnoreCase(text(item, "status")),
-                text(item, "status"),
-                text(item, "loginTime"));
+                item.path("success").asBoolean(false),
+                text(item, "reason"),
+                text(item, "loginTime"),
+                text(item, "ipAddress"));
     }
 
     private Map<String, Object> flightBody(Flight flight) {

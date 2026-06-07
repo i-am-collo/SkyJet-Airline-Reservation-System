@@ -14,6 +14,7 @@ public class LoginAudit {
     private String timestamp;
     private boolean success;
     private String reason;
+    private String ipAddress;
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public LoginAudit(String email, boolean success, String reason) {
@@ -22,6 +23,7 @@ public class LoginAudit {
         this.reason = reason;
         this.timestamp = LocalDateTime.now().format(formatter);
         this.userId = "UNKNOWN";
+        this.ipAddress = "";
     }
 
     public LoginAudit(String userId, String email, boolean success, String reason) {
@@ -30,6 +32,7 @@ public class LoginAudit {
         this.success = success;
         this.reason = reason;
         this.timestamp = LocalDateTime.now().format(formatter);
+        this.ipAddress = "";
     }
 
     public LoginAudit(String email, boolean success, String reason, String timestamp) {
@@ -38,6 +41,16 @@ public class LoginAudit {
         this.success = success;
         this.reason = reason;
         this.timestamp = formatTimestamp(timestamp);
+        this.ipAddress = "";
+    }
+
+    public LoginAudit(String email, boolean success, String reason, String timestamp, String ipAddress) {
+        this.userId = "UNKNOWN";
+        this.email = email;
+        this.success = success;
+        this.reason = reason;
+        this.timestamp = formatTimestamp(timestamp);
+        this.ipAddress = ipAddress != null ? ipAddress : "";
     }
 
     private String formatTimestamp(String value) {
@@ -72,12 +85,24 @@ public class LoginAudit {
         return reason;
     }
 
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    /**
+     * Returns a display-friendly status string for the audit table.
+     */
+    public String getStatus() {
+        return success ? "SUCCESS" : "FAILED";
+    }
+
     @Override
     public String toString() {
-        return String.format("[%s] %s - %s (%s)",
+        return String.format("[%s] %s - %s (%s) from %s",
                 timestamp,
                 email,
                 success ? "SUCCESS" : "FAILED",
-                reason);
+                reason,
+                ipAddress);
     }
 }

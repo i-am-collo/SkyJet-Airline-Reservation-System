@@ -1,7 +1,10 @@
 package com.skyjet.backend.repository;
 
 import com.skyjet.backend.entity.Booking;
+import com.skyjet.backend.entity.enums.BookingStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -12,17 +15,15 @@ import java.util.Optional;
  */
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
-    Optional<Booking> findByBookingId(String bookingId);
 
-    List<Booking> findByUser_Id(Long userId);
+    Optional<Booking> findByBookingRef(String bookingRef);
 
-    List<Booking> findByFlight_Id(Long flightId);
+    List<Booking> findByUser_UserId(Long userId);
 
-    List<Booking> findByFlight_IdAndStatus(Long flightId, String status);
+    List<Booking> findByStatus(BookingStatus status);
 
-    List<Booking> findByStatus(String status);
+    List<Booking> findByUser_UserIdAndStatus(Long userId, BookingStatus status);
 
-    List<Booking> findByUser_IdAndStatus(Long userId, String status);
-
-    boolean existsByFlight_IdAndSeatNumberAndStatus(Long flightId, String seatNumber, String status);
+    @Query("SELECT b FROM Booking b JOIN FETCH b.user WHERE b.bookingRef = :ref")
+    Optional<Booking> findByBookingRefWithUser(@Param("ref") String bookingRef);
 }

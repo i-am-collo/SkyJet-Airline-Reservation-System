@@ -49,7 +49,7 @@ public class DataStore {
     private void initUsers() {
         users = new ArrayList<>();
         // Store plain passwords for demo (in production, use pre-hashed values)
-        users.add(new User("U001", "James Carter", "james@skyjet.com", "password123", "USER"));
+        users.add(new User("U001", "James Carter", "james@skyjet.com", "password123", "CUSTOMER"));
         users.add(new User("U002", "Admin User", "admin@skyjet.com", "admin123", "ADMIN"));
     }
 

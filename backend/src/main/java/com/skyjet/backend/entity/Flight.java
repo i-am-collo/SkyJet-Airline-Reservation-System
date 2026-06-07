@@ -1,12 +1,13 @@
 package com.skyjet.backend.entity;
 
+import com.skyjet.backend.entity.enums.FlightStatus;
 import jakarta.persistence.*;
 import lombok.*;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
- * Flight Entity - Represents an available flight
+ * Flight Entity - Maps to the flights table in Supabase
+ * Fully normalized: references airline, aircraft, departure/arrival airports
  */
 @Entity
 @Table(name = "flights")
@@ -18,55 +19,33 @@ public class Flight {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "flight_id")
+    private Long flightId;
 
-    @Column(name = "flight_number", unique = true, nullable = false, length = 50)
-    private String flightNumber;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "airline_id", nullable = false)
+    private Airline airline;
 
-    @Column(nullable = false, length = 100)
-    private String airline;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "aircraft_id", nullable = false)
+    private Aircraft aircraft;
 
-    @Column(length = 100)
-    private String aircraft;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "departure_airport_id", nullable = false)
+    private Airport departureAirport;
 
-    @Column(nullable = false, length = 100)
-    private String origin;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "arrival_airport_id", nullable = false)
+    private Airport arrivalAirport;
 
-    @Column(nullable = false, length = 100)
-    private String destination;
+    @Column(name = "departure_time", nullable = false)
+    private LocalDateTime departureTime;
 
-    @Column(name = "departure_time", nullable = false, length = 10)
-    private String departureTime;
+    @Column(name = "arrival_time", nullable = false)
+    private LocalDateTime arrivalTime;
 
-    @Column(name = "arrival_time", length = 10)
-    private String arrivalTime;
-
-    @Column(length = 50)
-    private String duration;
-
-    @Column(nullable = false)
-    private BigDecimal price;
-
-    @Column(name = "available_seats", nullable = false)
-    private Integer availableSeats;
-
-    @Column(nullable = false, length = 50)
-    private String status; // ON TIME, DELAYED, CANCELLED, BOARDING
-
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "flight_status_enum")
+    @Builder.Default
+    private FlightStatus status = FlightStatus.SCHEDULED;
 }

@@ -133,8 +133,8 @@ public class AdminController implements Initializable {
             refreshStats();
 
             if (cmbStatus != null) {
-                cmbStatus.getItems().addAll("ON TIME", "DELAYED", "CANCELLED", "BOARDING");
-                cmbStatus.setValue("ON TIME");
+                cmbStatus.getItems().addAll("SCHEDULED", "BOARDING", "DELAYED", "CANCELLED", "DEPARTED", "ARRIVED");
+                cmbStatus.setValue("SCHEDULED");
             }
 
             if (formStatusLabel != null)
@@ -191,7 +191,9 @@ public class AdminController implements Initializable {
                     case "DELAYED" -> "#f4a836";
                     case "CANCELLED" -> "#ff6b6b";
                     case "BOARDING" -> "#00b4d8";
-                    default -> "#00d4aa";
+                    case "DEPARTED" -> "#a855f7";
+                    case "ARRIVED" -> "#22c55e";
+                    default -> "#00d4aa";  // SCHEDULED
                 };
                 setStyle("-fx-text-fill:" + c + "; -fx-font-weight:bold;");
             }
@@ -381,7 +383,7 @@ public class AdminController implements Initializable {
         fldPrice.clear();
         fldSeats.clear();
         fldAircraft.clear();
-        cmbStatus.setValue("ON TIME");
+        cmbStatus.setValue("SCHEDULED");
         flightTable.getSelectionModel().clearSelection();
         formStatusLabel.setVisible(false);
     }
@@ -458,6 +460,40 @@ public class AdminController implements Initializable {
                     e -> label.setText(String.valueOf(val))));
         }
         tl.play();
+    }
+
+    @FXML
+    public void handleCancelBooking() {
+        if (!verifyAdminAccess()) return;
+
+        Booking selected = adminBookingsTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            showFormStatus("⚠  Select a booking from the table to cancel.", false);
+            return;
+        }
+
+        if ("CANCELLED".equalsIgnoreCase(selected.getStatus())) {
+            showFormStatus("⚠  Booking is already cancelled.", false);
+            return;
+        }
+
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
+                "Cancel booking " + selected.getBookingRef() + "?",
+                ButtonType.YES, ButtonType.NO);
+        confirm.setTitle("Confirm Cancellation");
+        confirm.setHeaderText(null);
+        Optional<ButtonType> result = confirm.showAndWait();
+
+        if (result.isPresent() && result.get() == ButtonType.YES) {
+            try {
+                DataStore.getInstance().cancelBooking(selected);
+                loadAdminTables();
+                refreshStats();
+                showFormStatus("Booking " + selected.getBookingRef() + " cancelled.", true);
+            } catch (RuntimeException ex) {
+                showFormStatus("Could not cancel booking: " + ex.getMessage(), false);
+            }
+        }
     }
 
     // ---- Sidebar Navigation ----

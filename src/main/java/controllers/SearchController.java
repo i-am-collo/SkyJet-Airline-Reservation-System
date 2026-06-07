@@ -106,9 +106,15 @@ public class SearchController implements Initializable {
                 super.updateItem(status, empty);
                 if (empty || status == null) { setText(null); setStyle(""); return; }
                 setText(status);
-                setStyle(status.equals("DELAYED")
-                    ? "-fx-text-fill: #ff6b6b; -fx-font-weight: bold;"
-                    : "-fx-text-fill: #00d4aa; -fx-font-weight: bold;");
+                String c = switch (status) {
+                    case "DELAYED" -> "#f4a836";
+                    case "CANCELLED" -> "#ff6b6b";
+                    case "BOARDING" -> "#00b4d8";
+                    case "DEPARTED" -> "#a855f7";
+                    case "ARRIVED" -> "#22c55e";
+                    default -> "#00d4aa";  // SCHEDULED
+                };
+                setStyle("-fx-text-fill: " + c + "; -fx-font-weight: bold;");
             }
         });
 

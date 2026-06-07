@@ -5,13 +5,7 @@ import com.skyjet.backend.service.BookingService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,6 +22,15 @@ public class BookingController {
     @GetMapping
     public List<BookingDTO> myBookings(Authentication authentication) {
         return bookingService.getBookingsForUser(authentication.getName());
+    }
+
+    /**
+     * Get a specific booking by its reference code.
+     */
+    @GetMapping("/{bookingRef}")
+    public BookingDTO getBooking(Authentication authentication,
+                                 @PathVariable String bookingRef) {
+        return bookingService.getBookingByRef(authentication.getName(), bookingRef);
     }
 
     @GetMapping("/flights/{flightId}/booked-seats")

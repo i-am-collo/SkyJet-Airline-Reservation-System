@@ -48,7 +48,53 @@ public class DataStore {
 
     private void initUsers() {
         users = new ArrayList<>();
+<<<<<<< HEAD
         // No demo users - users must register or authenticate via backend
+=======
+        // Store plain passwords for demo (in production, use pre-hashed values)
+        users.add(new User("U001", "James Carter", "james@skyjet.com", "password123", "CUSTOMER"));
+        users.add(new User("U002", "Admin User", "admin@skyjet.com", "admin123", "ADMIN"));
+    }
+
+    private void initFlights() {
+        flights = FXCollections.observableArrayList(
+                new Flight("SJ-101", "SkyJet", "Nairobi (NBO)", "London (LHR)",
+                        "08:00", "20:15", "9h 15m", 850.00, 42, "Boeing 787", "ON TIME"),
+                new Flight("SJ-205", "SkyJet", "Nairobi (NBO)", "Dubai (DXB)",
+                        "09:45", "15:30", "5h 45m", 420.00, 18, "Airbus A330", "ON TIME"),
+                new Flight("SJ-312", "SkyJet", "Nairobi (NBO)", "Amsterdam (AMS)",
+                        "11:30", "22:45", "10h 15m", 790.00, 35, "Boeing 777", "DELAYED"),
+                new Flight("SJ-418", "SkyJet", "Nairobi (NBO)", "New York (JFK)",
+                        "14:00", "06:30", "15h 30m", 1250.00, 8, "Boeing 787", "ON TIME"),
+                new Flight("SJ-522", "SkyJet", "Nairobi (NBO)", "Paris (CDG)",
+                        "16:15", "04:30", "11h 15m", 880.00, 27, "Airbus A350", "ON TIME"),
+                new Flight("SJ-630", "SkyJet", "Nairobi (NBO)", "Johannesburg (JNB)",
+                        "06:00", "09:45", "3h 45m", 210.00, 55, "Boeing 737", "ON TIME"),
+                new Flight("SJ-744", "SkyJet", "Nairobi (NBO)", "Mumbai (BOM)",
+                        "23:00", "06:30", "6h 30m", 380.00, 31, "Airbus A320", "ON TIME"),
+                new Flight("SJ-856", "SkyJet", "Nairobi (NBO)", "Singapore (SIN)",
+                        "02:00", "18:15", "11h 15m", 950.00, 12, "Boeing 787", "ON TIME"),
+                new Flight("SJ-960", "SkyJet", "Nairobi (NBO)", "Cairo (CAI)",
+                        "07:30", "12:00", "4h 30m", 310.00, 44, "Airbus A320", "ON TIME"),
+                new Flight("SJ-1072", "SkyJet", "Nairobi (NBO)", "Sydney (SYD)",
+                        "21:00", "23:30", "21h 30m", 1650.00, 5, "Boeing 777", "ON TIME"));
+    }
+
+    private void initBookings() {
+        bookings = FXCollections.observableArrayList(
+                new Booking("BK-9281", "James Carter", "SJ-101",
+                        "Nairobi → London", "08:00 — 20:15", "14A",
+                        "Economy", 850.00, "CONFIRMED", "2024-06-01"),
+                new Booking("BK-8472", "James Carter", "SJ-205",
+                        "Nairobi → Dubai", "09:45 — 15:30", "22C",
+                        "Business", 1240.00, "CONFIRMED", "2024-05-18"),
+                new Booking("BK-7361", "James Carter", "SJ-630",
+                        "Nairobi → Johannesburg", "06:00 — 09:45", "5F",
+                        "Economy", 210.00, "CANCELLED", "2024-04-22"),
+                new Booking("BK-6250", "James Carter", "SJ-744",
+                        "Nairobi → Mumbai", "23:00 — 06:30", "31D",
+                        "Economy", 380.00, "CONFIRMED", "2024-03-10"));
+>>>>>>> 7ab266d7de2820f966138288ca7a7fc9c675a2ac
     }
 
     // ───────────────────────────────────────────

@@ -26,8 +26,7 @@ public class JwtProvider {
 
         return Jwts.builder()
                 .subject(user.getEmail())
-                .claim("userId", user.getUserId())
-                .claim("role", user.getRole())
+                .claim("role", user.getRole().name())
                 .issuedAt(now)
                 .expiration(expiry)
                 .signWith(signingKey())

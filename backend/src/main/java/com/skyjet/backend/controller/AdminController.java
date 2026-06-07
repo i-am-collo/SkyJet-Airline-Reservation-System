@@ -1,23 +1,14 @@
 package com.skyjet.backend.controller;
 
-import com.skyjet.backend.dto.BookingDTO;
-import com.skyjet.backend.dto.FlightDTO;
-import com.skyjet.backend.entity.LoginAudit;
+import com.skyjet.backend.dto.*;
 import com.skyjet.backend.service.AuditService;
 import com.skyjet.backend.service.BookingService;
 import com.skyjet.backend.service.FlightService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -38,31 +29,55 @@ public class AdminController {
         this.auditService = auditService;
     }
 
+    // ---- Flight CRUD ----
+
     @PostMapping("/flights")
     @ResponseStatus(HttpStatus.CREATED)
-    public FlightDTO createFlight(@Valid @RequestBody FlightDTO request) {
-        return flightService.createFlight(request);
+    public FlightDTO createFlight(Authentication authentication,
+                                  @Valid @RequestBody FlightDTO request) {
+        return flightService.createFlight(request, authentication.getName());
     }
 
     @PutMapping("/flights/{id}")
-    public FlightDTO updateFlight(@PathVariable Long id,
+    public FlightDTO updateFlight(Authentication authentication,
+                                  @PathVariable Long id,
                                   @Valid @RequestBody FlightDTO request) {
-        return flightService.updateFlight(id, request);
+        return flightService.updateFlight(id, request, authentication.getName());
     }
 
     @DeleteMapping("/flights/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteFlight(@PathVariable Long id) {
-        flightService.deleteFlight(id);
+    public void deleteFlight(Authentication authentication,
+                             @PathVariable Long id) {
+        flightService.deleteFlight(id, authentication.getName());
     }
+
+    // ---- Booking Management ----
 
     @GetMapping("/bookings")
     public List<BookingDTO> allBookings() {
         return bookingService.getAllBookings();
     }
 
+    @PostMapping("/bookings/{bookingRef}/cancel")
+    public BookingDTO adminCancelBooking(Authentication authentication,
+                                         @PathVariable String bookingRef) {
+        return bookingService.adminCancelBooking(authentication.getName(), bookingRef);
+    }
+
+    // ---- Audit Logs ----
+
     @GetMapping("/audits")
-    public List<LoginAudit> loginAudits() {
-        return auditService.getLoginAudits();
+    public List<LoginAuditDTO> getLoginAudits() {
+        return auditService.getRecentLoginAudits().stream()
+                .map(LoginAuditDTO::fromEntity)
+                .toList();
+    }
+
+    @GetMapping("/audit-logs")
+    public List<AuditLogDTO> getAuditLogs() {
+        return auditService.getRecentAuditLogs().stream()
+                .map(AuditLogDTO::fromEntity)
+                .toList();
     }
 }

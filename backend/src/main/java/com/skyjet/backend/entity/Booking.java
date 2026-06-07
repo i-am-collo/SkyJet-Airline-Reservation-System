@@ -1,12 +1,14 @@
 package com.skyjet.backend.entity;
 
+import com.skyjet.backend.entity.enums.BookingStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
- * Booking Entity - Represents a user's flight booking
+ * Booking Entity - Maps to the bookings table in Supabase
+ * Passengers and tickets are separate entities linked via FK
  */
 @Entity
 @Table(name = "bookings")
@@ -18,51 +20,33 @@ public class Booking {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "booking_id", unique = true, nullable = false, length = 50)
-    private String bookingId;
+    @Column(name = "booking_id")
+    private Long bookingId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "flight_id", nullable = false)
-    private Flight flight;
-
-    @Column(name = "seat_number", length = 10)
-    private String seatNumber;
-
-    @Column(name = "passenger_name", nullable = false)
-    private String passengerName;
-
-    @Column(nullable = false, length = 50)
-    private String status; // CONFIRMED, CANCELLED, COMPLETED
+    @Column(name = "booking_ref", unique = true, nullable = false, length = 20)
+    private String bookingRef;
 
     @Column(name = "booking_date")
-    private LocalDateTime bookingDate;
+    @Builder.Default
+    private LocalDateTime bookingDate = LocalDateTime.now();
 
-    @Column(name = "total_cost", nullable = false)
-    private BigDecimal totalCost;
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "booking_status_enum")
+    @Builder.Default
+    private BookingStatus status = BookingStatus.PENDING;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    @Column(name = "total_amount", precision = 12, scale = 2)
+    @Builder.Default
+    private BigDecimal totalAmount = BigDecimal.ZERO;
 
     @PrePersist
     protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
         if (this.bookingDate == null) {
             this.bookingDate = LocalDateTime.now();
         }
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
     }
 }

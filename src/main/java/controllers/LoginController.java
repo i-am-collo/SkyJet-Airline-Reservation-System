@@ -103,20 +103,6 @@ public class LoginController implements Initializable {
     }
 
     @FXML
-    public void handleDemoLogin() {
-        emailField.setText("james@skyjet.com");
-        passwordField.setText("password123");
-        handleLogin();
-    }
-
-    @FXML
-    public void handleAdminDemo() {
-        emailField.setText("admin@skyjet.com");
-        passwordField.setText("admin123");
-        handleLogin();
-    }
-
-    @FXML
     public void goToRegister() {
         Main.navigateTo("register");
     }
@@ -136,7 +122,7 @@ public class LoginController implements Initializable {
         if (error == null || error.isBlank() || error.toLowerCase().contains("invalid email or password")) {
             return "Invalid email or password. Please try again.";
         }
-        return "Unable to reach the backend. Demo buttons still work offline.";
+        return "Unable to reach the backend. Please check your connection.";
     }
 
     /** Horizontal shake animation on the login card */

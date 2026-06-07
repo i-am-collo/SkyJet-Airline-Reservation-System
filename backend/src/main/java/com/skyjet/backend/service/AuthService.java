@@ -29,10 +29,10 @@ public class AuthService {
     private final JwtProvider jwtProvider;
 
     public AuthService(AuthenticationManager authenticationManager,
-                       UserRepository userRepository,
-                       LoginAuditRepository loginAuditRepository,
-                       PasswordEncoder passwordEncoder,
-                       JwtProvider jwtProvider) {
+            UserRepository userRepository,
+            LoginAuditRepository loginAuditRepository,
+            PasswordEncoder passwordEncoder,
+            JwtProvider jwtProvider) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.loginAuditRepository = loginAuditRepository;
@@ -50,10 +50,8 @@ public class AuthService {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(email, request.getPassword()));
         } catch (AuthenticationException ex) {
-            if (!authenticateSeedDemoUser(user, request.getPassword())) {
-                audit(email, "FAILURE");
-                throw new ApiException(HttpStatus.UNAUTHORIZED, "Invalid email or password");
-            }
+            audit(email, "FAILURE");
+            throw new ApiException(HttpStatus.UNAUTHORIZED, "Invalid email or password");
         }
 
         user = userRepository.findByEmail(email)
@@ -92,22 +90,6 @@ public class AuthService {
                 .email(user.getEmail())
                 .role(user.getRole())
                 .build();
-    }
-
-    private boolean authenticateSeedDemoUser(User user, String password) {
-        if (user == null) {
-            return false;
-        }
-
-        boolean demoAdmin = "admin@skyjet.com".equalsIgnoreCase(user.getEmail()) && "admin123".equals(password);
-        boolean demoUser = "james@skyjet.com".equalsIgnoreCase(user.getEmail()) && "password123".equals(password);
-        if (!demoAdmin && !demoUser) {
-            return false;
-        }
-
-        user.setPassword(passwordEncoder.encode(password));
-        userRepository.save(user);
-        return true;
     }
 
     private void audit(String email, String status) {

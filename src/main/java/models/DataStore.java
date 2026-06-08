@@ -48,6 +48,9 @@ public class DataStore {
 
     private void initUsers() {
         users = new ArrayList<>();
+<<<<<<< HEAD
+        // No demo users - users must register or authenticate via backend
+=======
         // Store plain passwords for demo (in production, use pre-hashed values)
         users.add(new User("U001", "James Carter", "james@skyjet.com", "password123", "CUSTOMER"));
         users.add(new User("U002", "Admin User", "admin@skyjet.com", "admin123", "ADMIN"));
@@ -91,6 +94,7 @@ public class DataStore {
                 new Booking("BK-6250", "James Carter", "SJ-744",
                         "Nairobi → Mumbai", "23:00 — 06:30", "31D",
                         "Economy", 380.00, "CONFIRMED", "2024-03-10"));
+>>>>>>> 7ab266d7de2820f966138288ca7a7fc9c675a2ac
     }
 
     // ───────────────────────────────────────────
@@ -107,27 +111,10 @@ public class DataStore {
             currentUser = result.user();
             return currentUser;
         } catch (Exception ex) {
-            User demoUser = loginDemoUser(normalizedEmail, password);
-            if (demoUser != null) {
-                currentUser = demoUser;
-                SessionManager.getInstance().createSession(currentUser);
-                auditLogin(currentUser.getId(), normalizedEmail, true, "Demo login fallback");
-                return currentUser;
-            }
-
             lastLoginError = ex.getMessage();
             auditLogin(null, normalizedEmail, false, lastLoginError);
             return null;
         }
-    }
-
-    private User loginDemoUser(String email, String password) {
-        for (User user : users) {
-            if (user.getEmail().equalsIgnoreCase(email) && user.getPassword().equals(password)) {
-                return user;
-            }
-        }
-        return null;
     }
 
     public String getLastLoginError() {

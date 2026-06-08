@@ -30,10 +30,17 @@ public class AuthService {
     private final AuditService auditService;
 
     public AuthService(AuthenticationManager authenticationManager,
+<<<<<<< HEAD
+            UserRepository userRepository,
+            LoginAuditRepository loginAuditRepository,
+            PasswordEncoder passwordEncoder,
+            JwtProvider jwtProvider) {
+=======
                        UserRepository userRepository,
                        PasswordEncoder passwordEncoder,
                        JwtProvider jwtProvider,
                        AuditService auditService) {
+>>>>>>> 7ab266d7de2820f966138288ca7a7fc9c675a2ac
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -51,7 +58,11 @@ public class AuthService {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(email, request.getPassword()));
         } catch (AuthenticationException ex) {
+<<<<<<< HEAD
+            audit(email, "FAILURE");
+=======
             auditService.recordLoginAttempt(email, false, "Invalid credentials", ip, ua);
+>>>>>>> 7ab266d7de2820f966138288ca7a7fc9c675a2ac
             throw new ApiException(HttpStatus.UNAUTHORIZED, "Invalid email or password");
         }
 
@@ -146,6 +157,13 @@ public class AuthService {
                 .build();
     }
 
+<<<<<<< HEAD
+    private void audit(String email, String status) {
+        loginAuditRepository.save(LoginAudit.builder()
+                .email(email == null ? "unknown" : email.toLowerCase(Locale.ROOT))
+                .status(status)
+                .build());
+=======
     /**
      * Splits a single full name string into [firstName, lastName].
      */
@@ -167,6 +185,7 @@ public class AuthService {
             return forwarded.split(",")[0].trim();
         }
         return request.getRemoteAddr();
+>>>>>>> 7ab266d7de2820f966138288ca7a7fc9c675a2ac
     }
 
     private String extractUserAgent(HttpServletRequest request) {

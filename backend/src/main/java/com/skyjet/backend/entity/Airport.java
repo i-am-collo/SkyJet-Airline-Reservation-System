@@ -22,7 +22,7 @@ public class Airport {
     @Column(nullable = false, length = 150)
     private String name;
 
-    @Column(name = "iata_code", unique = true, nullable = false, length = 3, columnDefinition = "CHAR(3)")
+    @Column(name = "iata_code", unique = true, nullable = false, length = 3, columnDefinition = "bpchar(3)")
     private String iataCode;
 
     @Column(nullable = false, length = 100)

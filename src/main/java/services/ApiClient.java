@@ -62,6 +62,24 @@ public class ApiClient {
         return authResult(json);
     }
 
+    /**
+     * Fetches all airports from the backend.
+     * Returns a list of formatted strings like "City (IATA)".
+     */
+    public ObservableList<String> getAirports() throws IOException, InterruptedException {
+        JsonNode json = send("/api/airports", "GET", null, false);
+        ObservableList<String> airports = FXCollections.observableArrayList();
+        airports.add("Any");
+        for (JsonNode item : json) {
+            String city = text(item, "city");
+            String iata = text(item, "iataCode");
+            if (!city.isEmpty() && !iata.isEmpty()) {
+                airports.add(city + " (" + iata + ")");
+            }
+        }
+        return airports;
+    }
+
     public ObservableList<Flight> getFlights() throws IOException, InterruptedException {
         return getFlights(null, null);
     }

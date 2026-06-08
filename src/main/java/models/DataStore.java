@@ -134,12 +134,35 @@ public class DataStore {
         return lastLoginError;
     }
 
-    public boolean registerUser(String fullName, String email, String password) {
+    /**
+     * Registers a new user via the backend API.
+     * @return null on success, or an error message string on failure.
+     */
+    public String registerUser(String fullName, String email, String password) {
         try {
             apiClient.register(fullName, email, password);
-            return true;
+            return null; // success
         } catch (Exception ex) {
-            return false;
+            String msg = ex.getMessage();
+            if (msg == null || msg.isBlank()) {
+                return "Registration failed. Please try again.";
+            }
+            return msg;
+        }
+    }
+
+    /**
+     * Fetches airports from the backend for dropdown population.
+     * Falls back to a default list if the backend is unreachable.
+     */
+    public ObservableList<String> getAirports() {
+        try {
+            return apiClient.getAirports();
+        } catch (Exception ex) {
+            // Fallback to a default list if backend is unavailable
+            return FXCollections.observableArrayList(
+                    "Any", "Nairobi (NBO)", "London (LHR)", "Dubai (DXB)",
+                    "New York (JFK)", "Paris (CDG)", "Johannesburg (JNB)");
         }
     }
 

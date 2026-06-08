@@ -3,6 +3,8 @@ package com.skyjet.backend.entity;
 import com.skyjet.backend.entity.enums.TransactionStatus;
 import com.skyjet.backend.entity.enums.TransactionType;
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -32,6 +34,7 @@ public class Transaction {
     private User user;
 
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(name = "transaction_type", nullable = false, columnDefinition = "transaction_type_enum")
     private TransactionType transactionType;
 
@@ -39,6 +42,7 @@ public class Transaction {
     private BigDecimal amount;
 
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(name = "transaction_status", columnDefinition = "transaction_status_enum")
     @Builder.Default
     private TransactionStatus transactionStatus = TransactionStatus.PENDING;

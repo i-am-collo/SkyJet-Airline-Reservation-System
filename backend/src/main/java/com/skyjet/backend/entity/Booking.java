@@ -2,6 +2,8 @@ package com.skyjet.backend.entity;
 
 import com.skyjet.backend.entity.enums.BookingStatus;
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -35,6 +37,7 @@ public class Booking {
     private LocalDateTime bookingDate = LocalDateTime.now();
 
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(columnDefinition = "booking_status_enum")
     @Builder.Default
     private BookingStatus status = BookingStatus.PENDING;

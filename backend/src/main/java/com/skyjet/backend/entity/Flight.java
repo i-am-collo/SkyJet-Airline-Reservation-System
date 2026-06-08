@@ -2,6 +2,8 @@ package com.skyjet.backend.entity;
 
 import com.skyjet.backend.entity.enums.FlightStatus;
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import lombok.*;
 import java.time.LocalDateTime;
 
@@ -45,6 +47,7 @@ public class Flight {
     private LocalDateTime arrivalTime;
 
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(columnDefinition = "flight_status_enum")
     @Builder.Default
     private FlightStatus status = FlightStatus.SCHEDULED;

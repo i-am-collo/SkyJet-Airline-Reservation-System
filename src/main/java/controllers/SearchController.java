@@ -2,6 +2,7 @@ package controllers;
 
 import app.Main;
 import javafx.animation.*;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -65,15 +66,20 @@ public class SearchController implements Initializable {
     }
 
     private void populateCombos() {
-        String[] airports = {
-            "Any", "Nairobi (NBO)", "London (LHR)", "Dubai (DXB)",
-            "Amsterdam (AMS)", "New York (JFK)", "Paris (CDG)",
-            "Johannesburg (JNB)", "Mumbai (BOM)", "Singapore (SIN)",
-            "Cairo (CAI)", "Sydney (SYD)"
-        };
-        originCombo.getItems().addAll(airports);
-        destinationCombo.getItems().addAll(airports);
-        originCombo.setValue("Nairobi (NBO)");
+        javafx.collections.ObservableList<String> airports =
+                DataStore.getInstance().getAirports();
+
+        originCombo.setItems(airports);
+        destinationCombo.setItems(FXCollections.observableArrayList(airports));
+
+        // Set sensible defaults
+        if (airports.contains("Nairobi (NBO)")) {
+            originCombo.setValue("Nairobi (NBO)");
+        } else if (airports.size() > 1) {
+            originCombo.setValue(airports.get(1));
+        } else {
+            originCombo.setValue("Any");
+        }
         destinationCombo.setValue("Any");
 
         classCombo.getItems().addAll("Economy", "Business", "First Class");

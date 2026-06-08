@@ -2,6 +2,8 @@ package com.skyjet.backend.entity;
 
 import com.skyjet.backend.entity.enums.SeatClass;
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import lombok.*;
 
 /**
@@ -30,6 +32,7 @@ public class Seat {
     private String seatNumber;
 
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(name = "seat_class", nullable = false, columnDefinition = "seat_class_enum")
     private SeatClass seatClass;
 }

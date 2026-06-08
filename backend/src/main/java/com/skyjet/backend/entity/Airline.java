@@ -22,6 +22,6 @@ public class Airline {
     @Column(nullable = false, length = 150)
     private String name;
 
-    @Column(name = "iata_code", unique = true, nullable = false, length = 2, columnDefinition = "CHAR(2)")
+    @Column(name = "iata_code", unique = true, nullable = false, length = 2, columnDefinition = "bpchar(2)")
     private String iataCode;
 }

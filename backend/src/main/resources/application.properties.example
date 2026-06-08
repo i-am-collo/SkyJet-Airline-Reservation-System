@@ -1,11 +1,19 @@
-# Application Configuration
+# ============================================================
+# SkyJet Backend - Application Configuration
+# ============================================================
+# Copy this file to application.properties and fill in your values.
+#   cp application.properties.example application.properties
+# ============================================================
+
+# Application
 spring.application.name=SkyJet Backend API
 server.port=8080
 
 # Database Configuration (Supabase)
-spring.datasource.url=jdbc:postgresql://aws-0-eu-west-1.pooler.supabase.com:5432/postgres?sslmode=require
-spring.datasource.username=postgres.hlxslxfwtschtxkqfzmc
-spring.datasource.password=SkyJetPassw0rd123!
+# Get these from your Supabase project → Settings → Database
+spring.datasource.url=jdbc:postgresql://YOUR_SUPABASE_HOST:5432/postgres?sslmode=require
+spring.datasource.username=YOUR_SUPABASE_USER
+spring.datasource.password=YOUR_SUPABASE_PASSWORD
 spring.datasource.driver-class-name=org.postgresql.Driver
 
 # JPA/Hibernate Configuration

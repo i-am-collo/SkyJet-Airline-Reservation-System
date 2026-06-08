@@ -2,6 +2,8 @@ package com.skyjet.backend.entity;
 
 import com.skyjet.backend.entity.enums.UserRole;
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import lombok.*;
 import java.time.LocalDateTime;
 
@@ -37,6 +39,7 @@ public class User {
     private String passwordHash;
 
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(nullable = false, columnDefinition = "user_role_enum")
     @Builder.Default
     private UserRole role = UserRole.CUSTOMER;

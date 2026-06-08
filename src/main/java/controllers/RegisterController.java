@@ -83,8 +83,8 @@ public class RegisterController implements Initializable {
 
         PauseTransition pause = new PauseTransition(Duration.millis(1000));
         pause.setOnFinished(e -> {
-            boolean ok = DataStore.getInstance().registerUser(name, email, password);
-            if (ok) {
+            String error = DataStore.getInstance().registerUser(name, email, password);
+            if (error == null) {
                 successLabel.setText("Account created! Redirecting to login...");
                 successLabel.setVisible(true);
                 PauseTransition redirect = new PauseTransition(Duration.millis(1500));
@@ -93,7 +93,7 @@ public class RegisterController implements Initializable {
             } else {
                 registerBtn.setDisable(false);
                 registerBtn.setText("Create Account");
-                showError("An account with this email already exists.");
+                showError(error);
             }
         });
         pause.play();

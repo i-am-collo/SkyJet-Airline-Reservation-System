@@ -1,6 +1,6 @@
 package models;
 
-import java.util.UUID;
+
 
 /**
  * Manages user sessions and authentication tokens.
@@ -23,19 +23,12 @@ public class SessionManager {
     }
 
     /**
-     * Create a new session for the authenticated user
+     * Create a new session with the JWT token from the backend.
      * @param user The authenticated user
+     * @param token JWT token from the backend
+     * @param expiresInSeconds Token expiry in seconds
      * @return Session token
      */
-    public String createSession(User user) {
-        if (isSessionValid()) {
-            return currentSessionToken;
-        }
-        currentSessionToken = UUID.randomUUID().toString();
-        sessionExpiry = System.currentTimeMillis() + SESSION_DURATION;
-        return currentSessionToken;
-    }
-
     public String createSession(User user, String token, long expiresInSeconds) {
         currentSessionToken = token;
         sessionExpiry = System.currentTimeMillis() + (expiresInSeconds * 1000);

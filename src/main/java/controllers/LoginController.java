@@ -8,7 +8,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import models.DataStore;
-import models.SessionManager;
 import models.User;
 
 import java.net.URL;
@@ -81,7 +80,6 @@ public class LoginController implements Initializable {
                 javafx.application.Platform.runLater(() -> {
                     if (user != null) {
                         DataStore.getInstance().setCurrentUser(user);
-                        SessionManager.getInstance().createSession(user);
                         if (user.isAdmin()) {
                             Main.navigateTo("admin");
                         } else {

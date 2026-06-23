@@ -1,9 +1,8 @@
-<<<<<<< HEAD
 # SkyJet Airline Reservation System
 
-SkyJet is a JavaFX desktop airline reservation app connected to a Spring Boot REST API backend with PostgreSQL persistence. The frontend handles the user experience, while the backend owns authentication, flight data, bookings, admin flight management, JWT security, and database migrations.
+SkyJet is a JavaFX desktop airline reservation app connected to a Spring Boot REST API backend with PostgreSQL persistence (hosted on Supabase). The frontend handles the user experience, while the backend owns authentication, flight data, bookings, admin flight management, JWT security, and database schema.
 
-## Current Architecture
+## Architecture
 
 ```text
 JavaFX Desktop App
@@ -18,9 +17,9 @@ JavaFX Desktop App
 Spring Boot Backend
   backend/src/main/java/com/skyjet/backend
         |
-        | JPA + Flyway
+        | JPA (Hibernate)
         v
-PostgreSQL
+PostgreSQL (Supabase)
 ```
 
 The JavaFX app calls the backend at `http://localhost:8080` by default. You can override this with:
@@ -39,7 +38,7 @@ mvn javafx:run -Dskyjet.api.baseUrl=http://localhost:8080
 | Booking creation | Backend connected via `/api/bookings` |
 | Booking history | Loaded from backend |
 | Admin flight CRUD | Backend connected via `/api/admin/flights` |
-| PostgreSQL migrations | Managed by Flyway |
+| PostgreSQL (Supabase) | Schema managed in Supabase |
 | Seat map | UI still uses a local hard-coded booked-seat map |
 | Booking cancellation UI | Backend endpoint exists; UI action not added yet |
 
@@ -49,39 +48,28 @@ mvn javafx:run -Dskyjet.api.baseUrl=http://localhost:8080
 |------|-------------|
 | JDK | 17 or newer |
 | Maven | 3.8+ |
-| Docker Desktop | Required for the included PostgreSQL setup |
 | JavaFX | Pulled by Maven dependencies |
-
-If Docker is not installed, run PostgreSQL manually with the same database settings shown below.
 
 ## Quick Start
 
-### 1. Start PostgreSQL
+### 1. Configure the database
 
-From the project root:
+Copy the example config and fill in your Supabase credentials:
 
 ```bash
-docker compose up -d
+cd backend/src/main/resources
+cp application.properties.example application.properties
 ```
 
-This starts:
+Edit `application.properties` with your Supabase connection details:
 
-| Service | URL / Port | Credentials |
-|---------|------------|-------------|
-| PostgreSQL | `localhost:5432` | `skyjet_user` / `skyjet_password` |
-| pgAdmin | `http://localhost:5050` | `admin@skyjet.com` / `admin123` |
-
-Database details:
-
-```text
-Database: skyjet_db
-Username: skyjet_user
-Password: skyjet_password
+```properties
+spring.datasource.url=jdbc:postgresql://db.<YOUR_PROJECT_REF>.supabase.co:5432/postgres?sslmode=require
+spring.datasource.username=postgres
+spring.datasource.password=<YOUR_SUPABASE_PASSWORD>
 ```
 
 ### 2. Run the backend
-
-In a second terminal:
 
 ```bash
 cd backend
@@ -94,16 +82,9 @@ The backend starts at:
 http://localhost:8080
 ```
 
-Flyway runs automatically on startup and creates/seeds:
-
-- `users`
-- `flights`
-- `bookings`
-- `login_audits`
-
 ### 3. Run the JavaFX frontend
 
-In a third terminal, from the project root:
+From the project root:
 
 ```bash
 mvn javafx:run
@@ -120,7 +101,7 @@ The frontend will call the backend at `http://localhost:8080`.
 
 ## API Smoke Tests
 
-After PostgreSQL and the backend are running, you can verify the API.
+After the backend is running, you can verify the API.
 
 ### Login
 
@@ -174,7 +155,6 @@ curl -X POST http://localhost:8080/api/admin/flights \
 ```text
 SkyJet-AirlineReservationSystem/
   pom.xml                         JavaFX frontend build
-  docker-compose.yml              PostgreSQL and pgAdmin
   src/main/java/
     app/Main.java                 JavaFX entry point
     controllers/                  JavaFX screen controllers
@@ -196,8 +176,9 @@ SkyJet-AirlineReservationSystem/
       security/                   JWT provider/filter
       service/                    Business logic
     src/main/resources/
-      application.properties
-      db/migration/               Flyway migrations and seed data
+      application.properties      Configuration (gitignored)
+      application.properties.example  Template for configuration
+      db/seed_demo_data.sql       Seed data SQL script
 ```
 
 ## Backend Configuration
@@ -212,9 +193,9 @@ Important values:
 
 ```properties
 server.port=8080
-spring.datasource.url=jdbc:postgresql://localhost:5432/skyjet_db
-spring.datasource.username=skyjet_user
-spring.datasource.password=skyjet_password
+spring.datasource.url=jdbc:postgresql://db.<PROJECT_REF>.supabase.co:5432/postgres?sslmode=require
+spring.datasource.username=postgres
+spring.datasource.password=<YOUR_PASSWORD>
 app.jwt.secret=your-very-secure-secret-key-change-this-in-production-at-least-32-characters-long!
 app.jwt.expiration=86400000
 app.cors.allowed-origins=http://localhost:3000,http://localhost:8080
@@ -238,53 +219,18 @@ mvn javafx:run -Dskyjet.api.baseUrl=http://localhost:8081
 
 ## Troubleshooting
 
-### Docker command not found
-
-Install Docker Desktop, then reopen your terminal and run:
-
-```bash
-docker --version
-docker compose version
-```
-
-### PostgreSQL port already in use
-
-Change the port in `docker-compose.yml`:
-
-```yaml
-ports:
-  - "5433:5432"
-```
-
-Then update:
-
-```properties
-spring.datasource.url=jdbc:postgresql://localhost:5433/skyjet_db
-```
-
 ### Backend cannot connect to database
 
-Check containers:
-
-```bash
-docker ps
-docker logs skyjet-postgres
-```
-
-Restart:
-
-```bash
-docker compose restart
-```
+Make sure your `application.properties` has the correct Supabase credentials. Check that your Supabase project is active (not paused).
 
 ### Frontend login fails
 
 Make sure:
 
-- PostgreSQL is running.
 - Backend is running on `http://localhost:8080`.
 - You can call `http://localhost:8080/api/flights`.
 - The frontend `skyjet.api.baseUrl` points to the backend.
+- Demo users exist in the database (run `seed_demo_data.sql` if needed).
 
 ## Remaining Work
 
@@ -292,5 +238,3 @@ Make sure:
 - Add booking cancellation controls to the JavaFX booking history.
 - Optionally show admin booking and login audit views.
 - Add backend service/controller tests and frontend integration checks.
-=======
-
